@@ -17,7 +17,7 @@ export default function VerifyEmailSuccess() {
     const verifyEmail = async () => {
       try {
         const res = await api.get(
-          `/api/auth/verify-email?token=${token}`
+          `/auth/verify-email?token=${token}`
         );
         if (res.status === 200 || res.status === 302) {
           setStatus("success");
