@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
+import api from "../api/axiosInstance"
 import {
   Stethoscope,
   User,
@@ -189,7 +190,7 @@ export default function Register() {
     if (uploadId?.file) data.append("uploadId", uploadId.file);
 
     try {
-      await axios.post("http://localhost:5000/api/auth/register", data, {
+      await api.post("/auth/register", data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 

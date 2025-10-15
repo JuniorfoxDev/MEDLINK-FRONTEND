@@ -5,7 +5,7 @@ import { auth, googleProvider, appleProvider } from "../Firebase";
 import { signInWithPopup, getIdToken } from "firebase/auth";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-
+import api from '../api/axiosInstance';
 export default function Login() {
   const navigate = useNavigate();
 
@@ -30,12 +30,12 @@ export default function Login() {
     setOverlayVisible(true);
 
     try {
-      const res = await axios.post(
-        "http://localhost:5000/api/auth/login",
+      const res = await api.post(
+        "/api/auth/login",
         formData
       );
       localStorage.setItem("token", res.data.token);
-      axios.defaults.headers.common[
+      api.defaults.headers.common[
         "Authorization"
       ] = `Bearer ${res.data.token}`;
       navigate("/dashboard");
@@ -53,8 +53,8 @@ export default function Login() {
     try {
       const result = await signInWithPopup(auth, googleProvider);
       const token = await getIdToken(result.user);
-      const res = await axios.post(
-        "http://localhost:5000/api/auth/firebase-login",
+      const res = await api.post(
+        "/api/auth/firebase-login",
         {
           token,
           provider: "google",
@@ -76,8 +76,8 @@ export default function Login() {
     try {
       const result = await signInWithPopup(auth, appleProvider);
       const token = await getIdToken(result.user);
-      const res = await axios.post(
-        "http://localhost:5000/api/auth/firebase-login",
+      const res = await api.post(
+        "/api/auth/firebase-login",
         {
           token,
           provider: "apple",

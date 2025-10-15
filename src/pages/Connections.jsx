@@ -129,11 +129,12 @@ export default function Network() {
                 >
                   <div className="flex items-center gap-4">
                     <img
-                      src={
+                    src={
                         user.profilePic
-                          ? `http://localhost:5000${user.profilePic}`
-                          : `https://ui-avatars.com/api/?name=${user.name}`
+                          ? `${import.meta.env.VITE_BACKEND_URL}${user.profilePic}`
+                          : `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}`
                       }
+
                       alt={user.name}
                       className="w-14 h-14 rounded-full object-cover shadow"
                     />

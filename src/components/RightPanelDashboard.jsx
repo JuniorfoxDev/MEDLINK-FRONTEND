@@ -46,7 +46,11 @@ export default function RightPanel() {
   // ✅ Setup Socket.io
   useEffect(() => {
     if (!user?._id) return;
-    const s = io("http://localhost:5000");
+    const socket = io(import.meta.env.VITE_BACKEND_URL, {
+      transports: ["websocket", "polling"],
+      withCredentials: true,
+    });
+
     s.emit("registerUser", user._id);
     setSocket(s);
 

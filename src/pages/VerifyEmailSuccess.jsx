@@ -3,6 +3,7 @@ import { CheckCircle2, Loader2, ShieldCheck, MailCheck } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
+import api from '../api/axiosInstance'
 
 export default function VerifyEmailSuccess() {
   const [status, setStatus] = useState("loading"); // loading | success | error
@@ -15,8 +16,8 @@ export default function VerifyEmailSuccess() {
   useEffect(() => {
     const verifyEmail = async () => {
       try {
-        const res = await axios.get(
-          `http://localhost:5000/api/auth/verify-email?token=${token}`
+        const res = await api.get(
+          `/api/auth/verify-email?token=${token}`
         );
         if (res.status === 200 || res.status === 302) {
           setStatus("success");

@@ -142,11 +142,11 @@ export default function EditProfile() {
               <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-blue-500 shadow-md">
                 <img
                   src={
-                    preview ||
-                    (user.profilePic?.startsWith("http")
-                      ? user.profilePic
-                      : `http://localhost:5000${user.profilePic}`)
+                    user.profilePic
+                      ? `${import.meta.env.VITE_BACKEND_URL}${user.profilePic}`
+                      : `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}`
                   }
+
                   alt="Profile"
                   className="object-cover w-full h-full"
                 />
