@@ -28,7 +28,10 @@ const Navbar = () => {
     };
     fetchNotifications();
 
-    const socket = io("http://localhost:5000");
+    const socket = io(import.meta.env.VITE_BACKEND_URL, {
+  transports: ["websocket", "polling"],
+});
+
     const user = JSON.parse(localStorage.getItem("user"));
     if (user?._id) socket.emit("registerUser", user._id);
 

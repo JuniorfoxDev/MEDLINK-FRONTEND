@@ -52,7 +52,10 @@ export default function Navbar() {
     fetchNotifs();
 
     // ✅ Realtime socket.io connection
-    const socket = io("http://localhost:5000");
+    const socket = io(import.meta.env.VITE_BACKEND_URL, {
+  transports: ["websocket", "polling"],
+});
+
     const currentUser = JSON.parse(localStorage.getItem("user"));
     if (currentUser?._id) socket.emit("registerUser", currentUser._id);
 
