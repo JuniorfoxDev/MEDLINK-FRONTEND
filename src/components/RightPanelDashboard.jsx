@@ -46,7 +46,7 @@ export default function RightPanel() {
   // ✅ Setup Socket.io
   useEffect(() => {
     if (!user?._id) return;
-    const socket = io(import.meta.env.VITE_BACKEND_URL, {
+    const s = io(import.meta.env.VITE_BACKEND_URL, {
       transports: ["websocket", "polling"],
       withCredentials: true,
     });
