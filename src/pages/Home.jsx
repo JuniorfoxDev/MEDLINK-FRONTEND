@@ -15,7 +15,7 @@ const testimonials = [
   {
     name: "Dr. Priya Deshmukh",
     role: "Neurosurgeon | Fortis Mumbai",
-    text: "MediLink has connected me with specialists I never thought I’d meet — it’s like LinkedIn for the medical world!",
+    text: "MedLink has connected me with specialists I never thought I’d meet — it’s like LinkedIn for the medical world!",
     img: "https://randomuser.me/api/portraits/women/68.jpg",
   },
   {
@@ -27,7 +27,7 @@ const testimonials = [
   {
     name: "Aditi Sharma",
     role: "MBBS Intern | PGIMER Chandigarh",
-    text: "As a student, MediLink helped me get mentorship and early exposure to medical research and discussions.",
+    text: "As a student, MedLink helped me get mentorship and early exposure to medical research and discussions.",
     img: "https://randomuser.me/api/portraits/women/32.jpg",
   },
 ];
@@ -147,7 +147,7 @@ const Home = () => {
       {/* ✅ Timeline Section */}
       <Section
         title="How It Works"
-        subtitle="Simple steps to join the MediLink ecosystem."
+        subtitle="Simple steps to join the MedLink ecosystem."
       >
         <div className="flex flex-col md:flex-row justify-between items-center gap-10 mt-10">
           <TimelineStep
@@ -206,7 +206,7 @@ const Home = () => {
           Ready to Elevate Your Medical Career?
         </h2>
         <p className="text-white/90 mb-8 relative z-10">
-          Join MediLink today — where verified doctors, students, and experts
+          Join MedLink today — where verified doctors, students, and experts
           collaborate.
         </p>
         <motion.button

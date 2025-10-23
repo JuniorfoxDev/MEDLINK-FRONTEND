@@ -121,7 +121,7 @@ export default function Navbar() {
             className="text-2xl font-bold text-blue-600 cursor-pointer select-none"
             onClick={() => navigate("/dashboard")}
           >
-            MediLink
+            MedLink
           </motion.h1>
 
           {/* Search + Icons */}

@@ -79,7 +79,7 @@ const Navbar = () => {
             <Stethoscope size={18} />
           </motion.div>
           <span className="bg-gradient-to-r from-blue-600 to-sky-500 bg-clip-text text-transparent">
-            MediLink
+            MedLink
           </span>
         </NavLink>
 

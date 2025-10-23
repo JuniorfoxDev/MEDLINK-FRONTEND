@@ -14,6 +14,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useEffect } from "react";
 import socket from "./socket";
 import MyApplicants from './components/MyApplicants'
+import ChatPage from "./pages/chatPage";
 /**
  * ✅ App.jsx (Updated)
  * - Adds ToastContainer globally
@@ -101,6 +102,7 @@ function App() {
         pauseOnHover
         theme="colored"
       />
+      <Route path="/chat" element={<ChatPage />} />
     </>
   );
 }
