@@ -73,7 +73,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/chat" element={<ChatPage />} />
+          <Route path="/messages" element={<ChatPage />} />
           <Route
             path="/profile"
             element={
