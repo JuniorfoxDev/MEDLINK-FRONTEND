@@ -73,6 +73,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/chat" element={<ChatPage />} />
           <Route
             path="/profile"
             element={
@@ -102,7 +103,6 @@ function App() {
         pauseOnHover
         theme="colored"
       />
-      <Route path="/chat" element={<ChatPage />} />
     </>
   );
 }
