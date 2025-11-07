@@ -2,10 +2,16 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
-// ✅ Use Vite env variable (VITE_BACKEND_URL) — supports local + prod
-const API_BASE_URL =
-  import.meta.env.VITE_BACKEND_URL?.replace(/\/$/, "") + "/api" ||
-  "http://localhost:5000/api";
+// ✅ Load backend URL safely
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
+  ? import.meta.env.VITE_BACKEND_URL.replace(/\/$/, "")
+  : "http://localhost:5000";
+
+// ✅ Construct API base URL
+const API_BASE_URL = `${BACKEND_URL}/api`;
+
+// 🧩 Debug log (for safety)
+console.log("✅ Using API base URL:", API_BASE_URL);
 
 // ✅ Create axios instance
 const api = axios.create({

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   Search,
   UserPlus,
@@ -12,13 +12,17 @@ import Navbar from "../components/DashboardNavbar";
 import Sidebar from "../components/DashboardSidebar";
 import api from "../api/axiosInstance";
 import toast, { Toaster } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
-export default function Network() {
+export default function Connections() {
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [connecting, setConnecting] = useState(false);
   const [myConnections, setMyConnections] = useState([]);
+  const [myChats, setMyChats] = useState([]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadNetwork();
@@ -27,32 +31,42 @@ export default function Network() {
   const loadNetwork = async () => {
     try {
       setLoading(true);
-      const [all, mine] = await Promise.all([
-        api.get("/users"), // get all users
-        api.get("/users/connections"), // get my connections
+      const [all, mine, chats] = await Promise.all([
+        api.get("/users"),
+        api.get("/users/connections"),
+        api.get("/chats"),
       ]);
       setUsers(all.data.users || []);
       setMyConnections(mine.data.connections || []);
+      setMyChats(chats.data.chats || []);
     } catch (err) {
       console.error("Load network failed:", err);
+      toast.error("Failed to load connections");
     } finally {
       setLoading(false);
     }
   };
 
+  // ✅ Connect with a user
   const handleConnect = async (id) => {
     try {
       setConnecting(true);
-      const res = await api.post(`/users/${id}/connect`);
-      toast.success(res.data.message || "Connected successfully!");
-      loadNetwork();
+      const res = await api.post(`/users/connect/${id}`);
+      if (res.data.success) {
+        toast.success("✅ Connection request sent");
+        loadNetwork();
+      } else {
+        toast.error(res.data.message || "Connection failed");
+      }
     } catch (err) {
-      toast.error(err.response?.data?.message || "Failed to connect");
+      console.error("❌ Connect error:", err);
+      toast.error("Failed to connect");
     } finally {
       setConnecting(false);
     }
   };
 
+  // ✅ Remove a connection
   const handleUnconnect = async (id) => {
     try {
       setConnecting(true);
@@ -66,6 +80,26 @@ export default function Network() {
     }
   };
 
+  // ✅ Message a user (existing or new request)
+const handleMessage = async (userId) => {
+  try {
+    const res = await api.post("/chats/start", {
+      userId,
+      text: "👋 Hi! I’d like to connect with you.",
+    });
+    if (res.data.success) {
+      toast.success("💬 Message request sent!");
+      navigate("/messages");
+    } else {
+      toast.error(res.data.message || "Failed to start chat");
+    }
+  } catch (err) {
+    toast.error("Error sending message request");
+  }
+};
+
+
+  // ✅ Filter by search
   const filtered = users.filter(
     (u) =>
       u.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -73,6 +107,7 @@ export default function Network() {
       (u.specialization || "").toLowerCase().includes(search.toLowerCase())
   );
 
+  // ✅ Check if user is already connected
   const isConnected = (id) => myConnections.some((c) => c._id === id);
 
   return (
@@ -84,16 +119,18 @@ export default function Network() {
           <Sidebar />
         </div>
 
+        {/* ====== MAIN CONTENT ====== */}
         <motion.div
-          className="flex-1 bg-white/60 backdrop-blur-md rounded-2xl shadow-lg p-6 border border-white/40 overflow-hidden"
+          className="flex-1 bg-white/70 backdrop-blur-md rounded-2xl shadow-lg p-6 border border-white/40 overflow-hidden"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
         >
           <div className="flex flex-col md:flex-row items-center justify-between mb-6 gap-4">
             <h1 className="text-2xl font-semibold text-gray-800 flex items-center gap-2">
-              <Briefcase className="text-blue-600" /> Network
+              <Briefcase className="text-blue-600" /> Connections
             </h1>
 
+            {/* Search Bar */}
             <div className="flex items-center bg-gray-50 px-4 py-2 rounded-full border w-full md:w-72">
               <Search size={16} className="text-gray-500" />
               <input
@@ -106,7 +143,7 @@ export default function Network() {
             </div>
           </div>
 
-          {/* Loading */}
+          {/* ====== LOADING STATE ====== */}
           {loading ? (
             <div className="flex justify-center items-center py-20">
               <motion.div
@@ -124,17 +161,21 @@ export default function Network() {
               {filtered.map((user) => (
                 <motion.div
                   key={user._id}
-                  className="p-5 rounded-2xl bg-white/70 backdrop-blur-md border border-gray-100 hover:shadow-lg transition-all"
+                  className="p-5 rounded-2xl bg-white/80 backdrop-blur-md border border-gray-100 hover:shadow-lg transition-all"
                   whileHover={{ y: -4 }}
                 >
+                  {/* Profile Info */}
                   <div className="flex items-center gap-4">
                     <img
-                    src={
+                      src={
                         user.profilePic
-                          ? `${import.meta.env.VITE_BACKEND_URL}${user.profilePic}`
-                          : `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}`
+                          ? `${import.meta.env.VITE_BACKEND_URL}${
+                              user.profilePic
+                            }`
+                          : `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                              user.name
+                            )}`
                       }
-
                       alt={user.name}
                       className="w-14 h-14 rounded-full object-cover shadow"
                     />
@@ -152,11 +193,14 @@ export default function Network() {
                     </div>
                   </div>
 
+                  {/* Bio */}
                   <p className="text-sm text-gray-600 mt-3 line-clamp-3">
                     {user.bio || "No bio available"}
                   </p>
 
+                  {/* Actions */}
                   <div className="flex items-center justify-between mt-4">
+                    {/* Connect / Connected */}
                     <button
                       onClick={() =>
                         isConnected(user._id)
@@ -181,7 +225,11 @@ export default function Network() {
                       )}
                     </button>
 
-                    <button className="flex items-center gap-2 text-sm text-gray-600 hover:text-blue-600 transition">
+                    {/* Message button */}
+                    <button
+                      onClick={() => handleMessage(user._id)}
+                      className="flex items-center gap-2 text-sm text-gray-600 hover:text-blue-600 transition"
+                    >
                       <MessageSquare size={16} /> Message
                     </button>
                   </div>
