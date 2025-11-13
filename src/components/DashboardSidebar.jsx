@@ -20,7 +20,7 @@ const navItems = [
     id: 4,
     icon: MessageCircle,
     label: "Messages",
-    path: "/messages",
+    path: "/chat",
     badge: 2,
   },
   { id: 5, icon: Settings, label: "Settings", path: "/settings" },

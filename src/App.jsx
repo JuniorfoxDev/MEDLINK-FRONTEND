@@ -14,7 +14,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useEffect } from "react";
 import socket from "./socket";
 import MyApplicants from './components/MyApplicants'
-import ChatPage from "./pages/chatPage";
+import ChatPage from "./pages/chat/ChatPage";
 /**
  * ✅ App.jsx (Updated)
  * - Adds ToastContainer globally
@@ -73,7 +73,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/messages" element={<ChatPage />} />
+          <Route path="/chat" element={<ChatPage />} />
           <Route
             path="/profile"
             element={

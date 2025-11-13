@@ -34,11 +34,11 @@ export default function Connections() {
       const [all, mine, chats] = await Promise.all([
         api.get("/users"),
         api.get("/users/connections"),
-        api.get("/chats"),
+        api.get("/chat/conversations"), // ✅ FIXED route
       ]);
       setUsers(all.data.users || []);
       setMyConnections(mine.data.connections || []);
-      setMyChats(chats.data.chats || []);
+      setMyChats(chats.data.conversations || []); // ✅ backend returns "conversations"
     } catch (err) {
       console.error("Load network failed:", err);
       toast.error("Failed to load connections");
@@ -79,25 +79,27 @@ export default function Connections() {
       setConnecting(false);
     }
   };
+  // ✅ Message a user (create or open chat)
+  const handleMessage = async (userId) => {
+    try {
+      const res = await api.post("/chat/conversations", {
+        otherUserId: userId,
+      });
 
-  // ✅ Message a user (existing or new request)
-const handleMessage = async (userId) => {
-  try {
-    const res = await api.post("/chats/start", {
-      userId,
-      text: "👋 Hi! I’d like to connect with you.",
-    });
-    if (res.data.success) {
-      toast.success("💬 Message request sent!");
-      navigate("/messages");
-    } else {
-      toast.error(res.data.message || "Failed to start chat");
+      if (res.data.success && res.data.conversation) {
+        const convo = res.data.conversation;
+        // store conversation temporarily
+        localStorage.setItem("activeConversation", JSON.stringify(convo));
+        // navigate to correct chat page
+        navigate(`/chat?chat=${convo._id}`);
+      } else {
+        toast.error(res.data.message || "Failed to start chat");
+      }
+    } catch (err) {
+      console.error("Error starting chat:", err);
+      toast.error("Couldn't start chat");
     }
-  } catch (err) {
-    toast.error("Error sending message request");
-  }
-};
-
+  };
 
   // ✅ Filter by search
   const filtered = users.filter(
@@ -225,6 +227,7 @@ const handleMessage = async (userId) => {
                       )}
                     </button>
 
+                    {/* Message button */}
                     {/* Message button */}
                     <button
                       onClick={() => handleMessage(user._id)}

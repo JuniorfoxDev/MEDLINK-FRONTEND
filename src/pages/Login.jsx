@@ -35,6 +35,7 @@ export default function Login() {
         formData
       );
       localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
       api.defaults.headers.common[
         "Authorization"
       ] = `Bearer ${res.data.token}`;
