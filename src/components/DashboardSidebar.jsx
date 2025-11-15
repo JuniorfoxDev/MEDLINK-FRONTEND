@@ -129,9 +129,9 @@ export default function Sidebar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.3 }}
-            className="mt-4 border-t border-gray-100 pt-4 px-4 pb-3 space-y-2"
+            className="mt-4  pt-4 px-4 pb-3 space-y-2"
           >
-            <button
+            {/* <button
               onClick={() => navigate("/create-post")}
               className="w-full flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition"
             >
@@ -148,7 +148,7 @@ export default function Sidebar() {
               className="w-full flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-green-50 text-green-600 hover:bg-green-100 transition"
             >
               <HeartHandshake size={16} /> Join Discussion
-            </button>
+            </button> */}
           </motion.div>
         )}
       </AnimatePresence>

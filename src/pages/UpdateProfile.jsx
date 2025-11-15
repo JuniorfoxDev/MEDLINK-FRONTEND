@@ -16,7 +16,7 @@ import api from "../api/axiosInstance";
 import toast from "react-hot-toast";
 import Navbar from "../components/DashboardNavbar";
 import Sidebar from "../components/DashboardSidebar";
-
+import MobileFabMenu from "../components/MobileFab" 
 export default function EditProfile() {
   const [user, setUser] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -346,6 +346,7 @@ const InputField = ({ label, name, value, onChange, disabled, icon }) => (
           disabled ? "opacity-60 cursor-not-allowed" : ""
         }`}
       />
+    {/* <MobileFabMenu /> */}
     </div>
   </div>
 );

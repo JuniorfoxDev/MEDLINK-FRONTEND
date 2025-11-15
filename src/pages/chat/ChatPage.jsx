@@ -5,6 +5,7 @@ import ChatWindow from "../chat/ChatWindow";
 import api from "../../api/axiosInstance";
 import socket from "../../socket";
 import FloatingDashboardButton from "../../components/FloatingDashboardButton";
+
 const ChatPage = () => {
   const [searchParams] = useSearchParams();
   const chatId = searchParams.get("chat");
@@ -13,7 +14,9 @@ const ChatPage = () => {
   const [activeConvo, setActiveConvo] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 🧠 Load all conversations once
+  const [showSidebar, setShowSidebar] = useState(true);
+
+  // Load all conversations
   useEffect(() => {
     const loadConversations = async () => {
       try {
@@ -27,11 +30,10 @@ const ChatPage = () => {
         setLoading(false);
       }
     };
-
     loadConversations();
   }, []);
 
-  // 🟦 Restore last opened chat
+  // Restore last conversation
   useEffect(() => {
     const saved = localStorage.getItem("activeConversation");
     if (saved) {
@@ -40,20 +42,17 @@ const ChatPage = () => {
     }
   }, []);
 
-  // 🟦 If chatId param arrives externally (from Connections → Message button)
+  // Apply chatId from URL
   useEffect(() => {
     if (!chatId || !conversations.length) return;
 
     const match = conversations.find((c) => c._id === chatId);
-    if (match) {
-      setActiveConvo(match);
-    }
+    if (match) setActiveConvo(match);
   }, [chatId, conversations]);
 
-  // 🔥 REAL-TIME conversation updates (IMPORTANT FIX)
+  // REALTIME MESSAGES
   useEffect(() => {
     const handleIncoming = (data) => {
-      // update conversation list with last message
       setConversations((prev) =>
         prev.map((c) =>
           c._id === data.conversationId
@@ -62,7 +61,6 @@ const ChatPage = () => {
         )
       );
 
-      // if currently open chat, update lastMessage
       if (activeConvo?._id === data.conversationId) {
         setActiveConvo((prev) =>
           prev ? { ...prev, lastMessage: data.message } : prev
@@ -71,34 +69,51 @@ const ChatPage = () => {
     };
 
     socket.on("newMessage", handleIncoming);
-
     return () => socket.off("newMessage", handleIncoming);
   }, [activeConvo]);
 
-  // UI Rendering
-  return (
-    <div className="flex h-screen bg-neutral-900 text-white">
-      <ChatSidebar
-        conversations={conversations}
-        setConversations={setConversations}
-        setActiveConvo={setActiveConvo}
-        activeConvo={activeConvo}
-      />
+  // MOBILE auto hide sidebar
+  useEffect(() => {
+    if (window.innerWidth < 768 && activeConvo) {
+      setShowSidebar(false);
+    }
+  }, [activeConvo]);
 
-      <div className="flex-1">
+  return (
+    <div className="flex h-screen bg-neutral-900 text-white overflow-hidden">
+      {/* Sidebar */}
+      <div
+        className={`${
+          showSidebar ? "block" : "hidden"
+        } md:block w-full md:w-80`}
+      >
+        <ChatSidebar
+          conversations={conversations}
+          setConversations={setConversations}
+          setActiveConvo={setActiveConvo}
+          activeConvo={activeConvo}
+          closeSidebar={() => setShowSidebar(false)}
+        />
+      </div>
+
+      <div className={`${showSidebar ? "hidden md:flex" : "flex"} flex-1`}>
         {loading ? (
           <div className="flex h-full items-center justify-center text-neutral-400">
             Loading your chats...
           </div>
         ) : activeConvo ? (
-          <ChatWindow activeConvo={activeConvo} />
+          <ChatWindow
+            activeConvo={activeConvo}
+            goBack={() => setShowSidebar(true)}
+          />
         ) : (
           <div className="flex h-full items-center justify-center text-neutral-400">
             Select a conversation to start chatting
           </div>
         )}
       </div>
-      <FloatingDashboardButton/>
+
+      <FloatingDashboardButton />
     </div>
   );
 };

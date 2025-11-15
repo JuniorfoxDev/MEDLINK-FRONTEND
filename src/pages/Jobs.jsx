@@ -17,14 +17,7 @@ import api from "../api/axiosInstance";
 import CreateJobModal from "../components/CreateJobModal";
 import toast, { Toaster } from "react-hot-toast";
 import socket from "../socket";
-
-/**
- * Jobs.jsx
- * - Jobs listing
- * - Apply modal with resume upload (multipart/form-data)
- * - Save / Unsave
- * - Real-time applicant notifications
- */
+import MobileFabMenu from "../components/MobileFab"
 
 export default function Jobs() {
   const [jobs, setJobs] = useState([]);
@@ -509,6 +502,7 @@ export default function Jobs() {
           </motion.div>
         )}
       </AnimatePresence>
+      <MobileFabMenu />
     </div>
   );
 }

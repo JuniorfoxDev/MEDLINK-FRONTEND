@@ -19,8 +19,8 @@ const MobileFabMenu = () => {
     { icon: <Briefcase size={18} />, label: "Jobs", path: "/jobs" },
     {
       icon: <PenSquare size={18} />,
-      label: "Create Post",
-      path: "/create-post",
+      label: "Message",
+      path: "/chat",
     },
     { icon: <User size={18} />, label: "Profile", path: "/profile" },
     { icon: <Settings size={18} />, label: "Settings", path: "/settings" },

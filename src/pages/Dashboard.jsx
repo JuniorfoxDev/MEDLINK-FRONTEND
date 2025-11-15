@@ -9,15 +9,6 @@ import RightPanel from "../components/RightPanelDashboard";
 import MobileFabMenu from "../components/MobileFab";
 import socket from "../socket";
 import { toast } from "react-toastify";
-
-/**
- * 🧠 Dashboard (Feed Page)
- * - Fetches current user
- * - Loads posts from backend
- * - Real-time updates via socket.io
- * - Handles save/edit/delete instantly
- */
-
 export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [posts, setPosts] = useState([]);

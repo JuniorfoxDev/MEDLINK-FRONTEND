@@ -13,7 +13,7 @@ import Sidebar from "../components/DashboardSidebar";
 import api from "../api/axiosInstance";
 import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-
+import MobileFabMenu from "../components/MobileFab"
 export default function Connections() {
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
@@ -242,6 +242,7 @@ export default function Connections() {
           )}
         </motion.div>
       </div>
+    <MobileFabMenu />
     </div>
   );
 }

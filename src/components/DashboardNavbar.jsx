@@ -127,7 +127,7 @@ export default function Navbar() {
           {/* Search + Icons */}
           <div className="flex items-center space-x-4 relative">
             {/* Search Input */}
-            <div className="relative hidden sm:block">
+            {/* <div className="relative hidden sm:block">
               <Search
                 className="absolute left-3 top-2.5 text-gray-400"
                 size={18}
@@ -137,7 +137,7 @@ export default function Navbar() {
                 placeholder="Search..."
                 className="pl-9 pr-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm bg-white/70"
               />
-            </div>
+            </div> */}
 
             {/* 🔔 Notification Bell */}
             <div className="relative" ref={notifRef}>

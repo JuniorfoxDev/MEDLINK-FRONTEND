@@ -1,65 +1,88 @@
 import React, { useState } from "react";
+import { ArrowLeft } from "lucide-react";
 import api from "../../api/axiosInstance";
 
-export default function Sidebar({
+export default function ChatSidebar({
   conversations,
   setConversations,
   setActiveConvo,
   activeConvo,
+  closeSidebar, // mobile only
 }) {
   const [search, setSearch] = useState("");
 
   const user = JSON.parse(localStorage.getItem("user"));
-  const myId = user?._id || user?.id; // safest possible
+  const myId = user?._id || user?.id;
 
-  // 🛑 If user not loaded, show fallback
   if (!myId) {
     return (
-      <aside className="w-80 bg-neutral-800 border-r border-neutral-700 p-4 flex items-center justify-center text-neutral-400">
+      <aside className="w-full md:w-80 bg-neutral-800 border-r border-neutral-700 p-4 flex items-center justify-center text-neutral-400">
         Loading your chats...
       </aside>
     );
   }
 
-  // ⭐ SAFE helper to get "other user"
+  // Get other user from conversation
   const getOtherUser = (c) => {
-    if (!c?.participants) return null;
-
-    return c.participants.find((p) => {
+    return c.participants?.find((p) => {
       const pid = p?._id || p?.id;
       return pid && pid !== myId;
     });
   };
 
   return (
-    <aside className="w-80 bg-neutral-800 border-r border-neutral-700 p-4 flex flex-col">
-      <div className="mb-4 flex items-center justify-between">
+    <aside
+      className="
+        fixed md:static 
+        top-0 left-0 
+        max-h-full md:h-auto 
+        w-full md:w-80 
+        bg-neutral-800 
+        border-r border-neutral-700 
+        p-4 flex flex-col 
+        z-50
+        md:translate-x-0 
+        transition-transform duration-300
+      "
+    >
+      {/* MOBILE HEADER WITH BACK BUTTON */}
+      <div className="flex items-center justify-between mb-4 md:hidden">
+        <button
+          onClick={closeSidebar}
+          className="p-2 text-neutral-300 hover:text-white transition"
+        >
+          <ArrowLeft size={22} />
+        </button>
+        <h3 className="text-lg font-semibold">Messages</h3>
+        <div className="w-8" /> {/* Placeholder to center title */}
+      </div>
+
+      {/* DESKTOP HEADER */}
+      <div className="hidden md:flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold">Messages</h3>
         <button
-          type="button"
-          className="text-sm text-blue-400"
-          onClick={() => console.log("open new message UI")}
+          className="text-sm text-blue-400 hover:text-blue-300 transition"
+          onClick={() => console.log("open new message modal")}
         >
           New
         </button>
       </div>
 
-      {/* 🔍 Search bar */}
+      {/* SEARCH BAR */}
       <input
         placeholder="Search people..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="mb-3 w-full bg-neutral-700 px-3 py-2 rounded text-sm outline-none"
+        className="mb-3 w-full bg-neutral-700 px-3 py-2 rounded text-sm outline-none placeholder-neutral-400"
       />
 
-      {/* 🧩 Conversation List */}
-      <div className="flex-1 overflow-y-auto space-y-2">
+      {/* CONVERSATION LIST */}
+      <div className="flex-1 overflow-y-auto space-y-2 custom-scroll">
         {conversations
           .filter((c) => {
-            const other = getOtherUser(c);
-            if (!other) return false;
-
-            return other.name?.toLowerCase().includes(search.toLowerCase());
+            const u = getOtherUser(c);
+            if (!u) return false;
+            return u.name?.toLowerCase().includes(search.toLowerCase());
           })
           .map((c) => {
             const other = getOtherUser(c);
@@ -68,12 +91,19 @@ export default function Sidebar({
             return (
               <div
                 key={c._id}
-                className={`p-3 rounded cursor-pointer flex items-center gap-3 ${
-                  activeConvo?._id === c._id
-                    ? "bg-neutral-700"
-                    : "hover:bg-neutral-700/50"
-                }`}
-                onClick={() => setActiveConvo(c)}
+                onClick={() => {
+                  setActiveConvo(c);
+                  if (closeSidebar) closeSidebar(); // mobile: hide sidebar
+                }}
+                className={`
+                  p-3 rounded cursor-pointer flex items-center gap-3 
+                  transition-all
+                  ${
+                    activeConvo?._id === c._id
+                      ? "bg-neutral-700 shadow-md"
+                      : "hover:bg-neutral-700/50"
+                  }
+                `}
               >
                 <img
                   src={
@@ -92,7 +122,10 @@ export default function Sidebar({
                       {c.lastMessage
                         ? new Date(c.lastMessage.createdAt).toLocaleTimeString(
                             [],
-                            { hour: "2-digit", minute: "2-digit" }
+                            {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            }
                           )
                         : ""}
                     </div>
@@ -107,8 +140,8 @@ export default function Sidebar({
           })}
       </div>
 
-      <div className="mt-3 text-xs text-neutral-500">
-        Tip: click "New" to start a conversation.
+      <div className="mt-3 text-xs text-neutral-500 text-center">
+        Tip: Tap “New” to start a conversation.
       </div>
     </aside>
   );
