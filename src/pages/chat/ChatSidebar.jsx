@@ -37,7 +37,7 @@ export default function ChatSidebar({
       className="
         fixed md:static 
         top-0 left-0 
-        h-100% md:h-auto 
+        h-full 
         w-full md:w-80 
         bg-neutral-800 
         border-r border-neutral-700 
