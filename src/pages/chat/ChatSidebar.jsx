@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import api from "../../api/axiosInstance";
+import { Navigate, useNavigate } from "react-router-dom";
 
 export default function ChatSidebar({
   conversations,
@@ -9,6 +10,7 @@ export default function ChatSidebar({
   activeConvo,
   closeSidebar, // mobile only
 }) {
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
 
   const user = JSON.parse(localStorage.getItem("user"));
@@ -16,7 +18,7 @@ export default function ChatSidebar({
 
   if (!myId) {
     return (
-      <aside className="w-full md:w-80 bg-neutral-800 border-r border-neutral-700 p-4 flex items-center justify-center text-neutral-400">
+      <aside className="w-full  md:w-80 bg-neutral-800 border-r border-neutral-700 p-4 flex items-center justify-center text-neutral-400">
         Loading your chats...
       </aside>
     );
@@ -35,7 +37,7 @@ export default function ChatSidebar({
       className="
         fixed md:static 
         top-0 left-0 
-        max-h-full md:h-auto 
+        h-100% md:h-auto 
         w-full md:w-80 
         bg-neutral-800 
         border-r border-neutral-700 
@@ -62,7 +64,7 @@ export default function ChatSidebar({
         <h3 className="text-lg font-semibold">Messages</h3>
         <button
           className="text-sm text-blue-400 hover:text-blue-300 transition"
-          onClick={() => console.log("open new message modal")}
+          onClick={() => navigate("/network")}
         >
           New
         </button>
